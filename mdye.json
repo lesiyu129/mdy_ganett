@@ -1,5 +1,6 @@
 {
   "id": "68307d762a0f2435427532be-68307e0d7d0979ac2d3bd429",
   "template": "Vue",
-  "version": "0.1"
+  "version": "0.1",
+  "host": ""
 }
