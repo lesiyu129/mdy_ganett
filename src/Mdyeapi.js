@@ -25,7 +25,11 @@ class Mdyeapi {
         console.log('api=', this.api);
         const records = []
         const group = []
+        const relatedRecordsGroup = []
         const controls = this.config.controls
+        const worksheetId = this.config.worksheetId
+        const viewId = this.config.viewId
+        const pageSize = 10
         // 获取分组条件
         for (const group_id of this.env.group) {
             const control_data = _.find(controls, (control) => {
@@ -37,22 +41,43 @@ class Mdyeapi {
                     break;
                 }
                 case 29: {
-                    const relationControls = control_data.relationControls
                     const sourceTitleControlId = control_data.sourceTitleControlId
-                    const sourceTitleControl = _.find(relationControls, (relationControl) => {
-                        return relationControl.controlId === sourceTitleControlId
+                    // 获取任务总数
+                    const count = await this.api.getFilterRowsTotalNum({
+                        worksheetId: worksheetId,
+                        viewId: viewId,
                     })
-                    console.log('sourceTitleControl=', sourceTitleControl);
-                    const count = await this.api.getRowRelationRows({
-                        controlId: control_data.controlId
-                    })
-                    console.log('count=', count);
+                    //  获取最大页数
+                    const page = Math.ceil(count / pageSize)
 
+                    // 获取所有关联表数据的标题进行分组
+                    for (let i = 1; i < page; i++) {
+                        const { data } = await this.api.getFilterRows({
+                            worksheetId: worksheetId,
+                            viewId: viewId,
+                            pageIndex: i,
+                            pageSize: pageSize,
+                            notGetTotal: true,
+                        })
+                        for (const item of data) {
+                            const relatedRecords = item[control_data.controlId]
+                            const relatedRecordsJson = JSON.parse(relatedRecords)
+                            if (relatedRecordsJson && relatedRecordsJson.length > 0) {
+                                const sourcevalue = JSON.parse(relatedRecordsJson[0].sourcevalue)
+                                const title = sourcevalue[sourceTitleControlId]
+                                relatedRecordsGroup.push(title)
+                            }
+                        }
+                    }
+                    const options = new Set(relatedRecordsGroup)
+                    const optionsArray = Array.from(options)
+                    group.push(optionsArray)
                     break;
                 }
                 default:
                     break;
             }
+            console.log('group=', group);
         }
 
 
