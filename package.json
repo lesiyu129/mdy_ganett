@@ -13,6 +13,7 @@
     "@visactor/vtable": "^1.18.3",
     "@visactor/vtable-gantt": "^1.18.3",
     "dhtmlx-gantt": "^9.0.10",
+    "lodash": "^4.17.21",
     "mdye": "^0.0.17",
     "mdye-cli": "^0.0.38",
     "vue": "^3.4.21"

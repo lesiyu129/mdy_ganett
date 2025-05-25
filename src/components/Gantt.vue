@@ -7,8 +7,12 @@
 <script setup>
 import { ref, onMounted, reactive } from "vue";
 import * as VTableGantt from "@visactor/vtable-gantt";
+import { mdyeapi } from "../Mdyeapi";
 const ganttContainer = ref(null);
 onMounted(() => {
+  console.log(mdyeapi.getRecords());
+  const tasksShowMode = mdyeapi.getTasksShowMode();
+  console.log(tasksShowMode);
   const records = [
     {
       id: 0,
@@ -23,6 +27,16 @@ onMounted(() => {
           end: "2024-11-17",
           avatar:
             "https://lf9-dp-fe-cms-tos.byteorg.com/obj/bit-cloud/VTable/custom-render/wolf.jpg",
+          children: [
+            {
+              id: 21,
+              name: "Michael Smith121212",
+              start: "2024-12-15",
+              end: "2024-12-17",
+              avatar:
+                "https://lf9-dp-fe-cms-tos.byteorg.com/obj/bit-cloud/VTable/custom-render/wolf.jpg",
+            },
+          ],
         },
         {
           id: 2,
@@ -226,6 +240,7 @@ onMounted(() => {
       tree: true,
     },
   ];
+
   const option = {
     overscrollBehavior: "none",
     records,
@@ -249,14 +264,14 @@ onMounted(() => {
       },
     },
     groupBy: true,
-    tasksShowMode: VTableGantt.TYPES.TasksShowMode.Sub_Tasks_Inline,
+    tasksShowMode: tasksShowMode,
     frame: {
       outerFrameStyle: {
         borderLineWidth: 1,
         borderColor: "#e1e4e8",
         cornerRadius: 8,
       },
-      verticalSplitLineMoveable: false,
+      verticalSplitLineMoveable: true,
     },
     grid: {
       horizontalLine: {
@@ -293,6 +308,7 @@ onMounted(() => {
         borderColor: "black",
         borderLineWidth: 1,
       },
+      scheduleCreatable: false,
     },
     dependency: {
       linkCreatable: false,
